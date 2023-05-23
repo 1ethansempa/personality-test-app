@@ -90,7 +90,7 @@ describe('AssessmentService', () => {
           useValue: {
             getAll: jest.fn().mockReturnValue(mockQuestions),
             createMany: jest.fn().mockReturnValue(mockQuestions),
-            get: jest.fn().mockReturnValue({}),
+            get: jest.fn().mockReturnValue(mockQuestions[0]),
           },
         },
       ],
@@ -120,11 +120,19 @@ describe('AssessmentService', () => {
 
       jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
 
-      try {
-        await service.getQuestionById('4');
-      } catch (error) {
+      await service.getQuestionById('4').catch((error) => {
         expect(error).toBeInstanceOf(NotFoundException);
-      }
+      });
+    });
+
+    it('should return question if question id exists', async () => {
+      const mockGetQuestion = jest.fn().mockReturnValue(mockQuestions[0]);
+
+      jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
+
+      const question = await service.getQuestionById('1');
+
+      expect(question).toEqual(mockQuestions[0]);
     });
   });
 });
