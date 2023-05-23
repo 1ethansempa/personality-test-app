@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AssessmentService, Question } from './assessment.service';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
+import { NotFoundException } from '@nestjs/common';
 
 const mockQuestions = [
   {
@@ -89,6 +90,7 @@ describe('AssessmentService', () => {
           useValue: {
             getAll: jest.fn().mockReturnValue(mockQuestions),
             createMany: jest.fn().mockReturnValue(mockQuestions),
+            get: jest.fn().mockReturnValue({}),
           },
         },
       ],
@@ -111,6 +113,18 @@ describe('AssessmentService', () => {
       const questions = await service.getQuestions();
 
       expect(questions).toEqual(mockQuestions);
+    });
+
+    it('should throw a NotFoundException if question id doesnt exist', async () => {
+      const mockGetQuestion = jest.fn().mockReturnValue(undefined);
+
+      jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
+
+      try {
+        await service.getQuestionById('4');
+      } catch (error) {
+        expect(error).toBeInstanceOf(NotFoundException);
+      }
     });
   });
 });

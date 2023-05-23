@@ -102,7 +102,9 @@ export class AssessmentService {
   async getQuestionById(id: string): Promise<Question> {
     const questionMatchingId = await this.db.get(id);
 
-    if (!questionMatchingId) {
+    console.log(questionMatchingId);
+
+    if (questionMatchingId === null || questionMatchingId === undefined) {
       throw new NotFoundException({
         message: 'No question matching id you provided',
       });
