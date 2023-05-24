@@ -1,6 +1,7 @@
 import { InMemoryDBEntity } from '@nestjs-addons/in-memory-db';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import { QuestionResponseDto } from './dtos/assessment.dto';
 
 export interface Question extends InMemoryDBEntity {
   id: string;
@@ -95,11 +96,15 @@ export class AssessmentService {
     await this.db.createMany(questions);
   }
 
-  async getQuestions(): Promise<Question[]> {
-    return await this.db.getAll();
+  async getQuestions(): Promise<QuestionResponseDto[]> {
+    const questions = await this.db.getAll();
+
+    return questions.map((question) => {
+      return new QuestionResponseDto(question);
+    });
   }
 
-  async getQuestionById(id: string): Promise<Question> {
+  async getQuestionById(id: string): Promise<QuestionResponseDto> {
     const questionMatchingId = await this.db.get(id);
 
     console.log(questionMatchingId);
@@ -110,6 +115,6 @@ export class AssessmentService {
       });
     }
 
-    return questionMatchingId;
+    return new QuestionResponseDto(questionMatchingId);
   }
 }
