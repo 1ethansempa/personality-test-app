@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AssessmentService, Question } from './assessment.service';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 const mockQuestions = [
   {
@@ -136,6 +136,12 @@ const mockWeightlessQuestions = [
   },
 ];
 
+const selectedOptions = [
+  { id: '1', selectedIndex: 2 },
+  { id: '2', selectedIndex: 0 },
+  { id: '3', selectedIndex: 1 },
+];
+
 describe('AssessmentService', () => {
   let service: AssessmentService;
   let db: InMemoryDBService<Question>;
@@ -217,6 +223,26 @@ describe('AssessmentService', () => {
           }),
         ]),
       });
+    });
+  });
+
+  describe('results', () => {
+    it('should return a bad request error if not all questions have been answered', async () => {
+      const mockResults = jest.fn().mockReturnValue(
+        new BadRequestException({
+          message: 'You havent answered all questions',
+        }),
+      );
+
+      jest
+        .spyOn(service, 'determinePersonalityTrait')
+        .mockImplementation(mockResults);
+
+      try {
+        await service.determinePersonalityTrait(selectedOptions.splice(2, 1));
+      } catch (error) {
+        expect(error).toBeInstanceOf(BadRequestException);
+      }
     });
   });
 });
