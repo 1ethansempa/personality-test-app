@@ -76,6 +76,66 @@ const mockQuestions = [
   },
 ];
 
+const mockWeightlessQuestions = [
+  {
+    id: '1',
+    question:
+      'You’re really busy at work and a colleague is telling you their life story and personal woes. You:',
+    options: [
+      {
+        text: 'Don’t dare to interrupt them',
+      },
+      {
+        text: 'Think it’s more important to give them some of your time; work can wait',
+      },
+      {
+        text: 'Listen, but with only with half an ear',
+      },
+      {
+        text: 'Interrupt and explain that you are really busy at the moment',
+      },
+    ],
+  },
+  {
+    id: '2',
+    question:
+      'You’ve been sitting in the doctor’s waiting room for more than 25 minutes. You:',
+    options: [
+      {
+        text: 'Look at your watch every two minutes',
+      },
+      {
+        text: 'Bubble with inner anger, but keep quiet',
+      },
+      {
+        text: 'Explain to other equally impatient people in the room that the doctor is always running late',
+      },
+      {
+        text: 'Complain in a loud voice, while tapping your foot impatiently',
+      },
+    ],
+  },
+  {
+    id: '3',
+    question:
+      'You’re having an animated discussion with a colleague regarding a project that you’re in charge of. You:',
+    options: [
+      {
+        text: 'Don’t dare contradict them',
+      },
+      {
+        text: 'Think that they are obviously right',
+      },
+      {
+        text: 'Defend your own point of view, tooth and nail',
+      },
+      {
+        text: 'Continuously interrupt your colleague',
+      },
+    ],
+  },
+];
+
 describe('AssessmentService', () => {
   let service: AssessmentService;
   let db: InMemoryDBService<Question>;
@@ -88,9 +148,9 @@ describe('AssessmentService', () => {
         {
           provide: InMemoryDBService,
           useValue: {
-            getAll: jest.fn().mockReturnValue(mockQuestions),
+            getAll: jest.fn().mockReturnValue(mockWeightlessQuestions),
             createMany: jest.fn().mockReturnValue(mockQuestions),
-            get: jest.fn().mockReturnValue(mockQuestions[0]),
+            get: jest.fn().mockReturnValue(mockWeightlessQuestions[0]),
           },
         },
       ],
@@ -106,13 +166,15 @@ describe('AssessmentService', () => {
 
   describe('getQuestions', () => {
     it('should return questions', async () => {
-      const mockGetQuestions = jest.fn().mockReturnValue(mockQuestions);
+      const mockGetQuestions = jest
+        .fn()
+        .mockReturnValue(mockWeightlessQuestions);
 
       jest.spyOn(db, 'getAll').mockImplementation(mockGetQuestions);
 
       const questions = await service.getQuestions();
 
-      expect(questions).toEqual(mockQuestions);
+      expect(questions).toEqual(mockWeightlessQuestions);
     });
 
     it('should throw a NotFoundException if question id doesnt exist', async () => {
@@ -126,13 +188,35 @@ describe('AssessmentService', () => {
     });
 
     it('should return question if question id exists', async () => {
-      const mockGetQuestion = jest.fn().mockReturnValue(mockQuestions[0]);
+      const mockGetQuestion = jest
+        .fn()
+        .mockReturnValue(mockWeightlessQuestions[0]);
 
       jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
 
       const question = await service.getQuestionById('1');
 
-      expect(question).toEqual(mockQuestions[0]);
+      expect(question).toEqual(mockWeightlessQuestions[0]);
+    });
+
+    it('should check that question weight is not returned to user', async () => {
+      const mockGetQuestion = jest
+        .fn()
+        .mockReturnValue(mockWeightlessQuestions[0]);
+
+      jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
+
+      const question = await service.getQuestionById('1');
+
+      expect(question).toEqual({
+        id: expect.any(String),
+        question: expect.any(String),
+        options: expect.arrayContaining([
+          expect.objectContaining({
+            text: expect.any(String),
+          }),
+        ]),
+      });
     });
   });
 });
