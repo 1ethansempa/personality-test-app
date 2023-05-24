@@ -105,6 +105,14 @@ export class AssessmentService {
     await this.db.createMany(questions);
   }
 
+  /**
+   * This function retrieves all questions from a database and returns them as an array of
+   * QuestionResponseDto objects.
+   * @returns The `getQuestions()` function is returning an array of `QuestionResponseDto` objects. The
+   * function retrieves all questions from a database using the `getAll()` method and then maps each
+   * question to a `QuestionResponseDto` object using the `QuestionResponseDto` constructor. The
+   * resulting array of `QuestionResponseDto` objects is then returned.
+   */
   async getQuestions(): Promise<QuestionResponseDto[]> {
     const questions = await this.db.getAll();
 
@@ -113,6 +121,18 @@ export class AssessmentService {
     });
   }
 
+  /**
+   * This function retrieves a question by its ID from a database and returns it as a
+   * QuestionResponseDto object, throwing a NotFoundException if no matching question is found.
+   * @param {string} id - The `id` parameter is a string representing the unique identifier of a
+   * question that is being requested. The function `getQuestionById` retrieves the question from a
+   * database using this identifier and returns it as a `QuestionResponseDto` object. If no question is
+   * found with the provided `id`, a
+   * @returns The function `getQuestionById` returns a `Promise` that resolves to a
+   * `QuestionResponseDto` object. This object is created using the `questionMatchingId` retrieved from
+   * the database and passed as an argument to the `QuestionResponseDto` constructor. If there is no
+   * question matching the provided id, a `NotFoundException` is thrown.
+   */
   async getQuestionById(id: string): Promise<QuestionResponseDto> {
     const questionMatchingId = await this.db.get(id);
 
@@ -127,6 +147,14 @@ export class AssessmentService {
     return new QuestionResponseDto(questionMatchingId);
   }
 
+  /**
+   * This function determines a personality trait based on selected options and returns it as a string.
+   * @param {SelectedOption[]} selectedOptions - An array of objects representing the user's selected
+   * options for each question in the personality quiz. Each object has two properties: "id" (the ID of
+   * the question) and "selectedIndex" (the index of the selected option for that question).
+   * @returns a string that represents the personality trait determined based on the selected options. If
+   * the score is greater than 8, the function returns 'Extrovert', otherwise it returns 'Introvert'.
+   */
   async determinePersonalityTrait(
     selectedOptions: SelectedOption[],
   ): Promise<string> {
