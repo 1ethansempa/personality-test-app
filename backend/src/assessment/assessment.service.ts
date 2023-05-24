@@ -1,6 +1,11 @@
 import { InMemoryDBEntity } from '@nestjs-addons/in-memory-db';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import { QuestionResponseDto } from './dtos/assessment.dto';
 
 export interface Question extends InMemoryDBEntity {
   id: string;
@@ -11,6 +16,11 @@ export interface Question extends InMemoryDBEntity {
 interface Option {
   text: string;
   weight: number;
+}
+
+export interface SelectedOption {
+  id: string;
+  selectedIndex: number;
 }
 
 @Injectable()
@@ -95,11 +105,35 @@ export class AssessmentService {
     await this.db.createMany(questions);
   }
 
-  async getQuestions(): Promise<Question[]> {
-    return await this.db.getAll();
+  /**
+   * This function retrieves all questions from a database and returns them as an array of
+   * QuestionResponseDto objects.
+   * @returns The `getQuestions()` function is returning an array of `QuestionResponseDto` objects. The
+   * function retrieves all questions from a database using the `getAll()` method and then maps each
+   * question to a `QuestionResponseDto` object using the `QuestionResponseDto` constructor. The
+   * resulting array of `QuestionResponseDto` objects is then returned.
+   */
+  async getQuestions(): Promise<QuestionResponseDto[]> {
+    const questions = await this.db.getAll();
+
+    return questions.map((question) => {
+      return new QuestionResponseDto(question);
+    });
   }
 
-  async getQuestionById(id: string): Promise<Question> {
+  /**
+   * This function retrieves a question by its ID from a database and returns it as a
+   * QuestionResponseDto object, throwing a NotFoundException if no matching question is found.
+   * @param {string} id - The `id` parameter is a string representing the unique identifier of a
+   * question that is being requested. The function `getQuestionById` retrieves the question from a
+   * database using this identifier and returns it as a `QuestionResponseDto` object. If no question is
+   * found with the provided `id`, a
+   * @returns The function `getQuestionById` returns a `Promise` that resolves to a
+   * `QuestionResponseDto` object. This object is created using the `questionMatchingId` retrieved from
+   * the database and passed as an argument to the `QuestionResponseDto` constructor. If there is no
+   * question matching the provided id, a `NotFoundException` is thrown.
+   */
+  async getQuestionById(id: string): Promise<QuestionResponseDto> {
     const questionMatchingId = await this.db.get(id);
 
     console.log(questionMatchingId);
@@ -110,6 +144,45 @@ export class AssessmentService {
       });
     }
 
-    return questionMatchingId;
+    return new QuestionResponseDto(questionMatchingId);
+  }
+
+  /**
+   * This function determines a personality trait based on selected options and returns it as a string.
+   * @param {SelectedOption[]} selectedOptions - An array of objects representing the user's selected
+   * options for each question in the personality quiz. Each object has two properties: "id" (the ID of
+   * the question) and "selectedIndex" (the index of the selected option for that question).
+   * @returns a string that represents the personality trait determined based on the selected options. If
+   * the score is greater than 8, the function returns 'Extrovert', otherwise it returns 'Introvert'.
+   */
+  async determinePersonalityTrait(
+    selectedOptions: SelectedOption[],
+  ): Promise<string> {
+    const questions = await this.db.getAll();
+
+    if (selectedOptions.length !== questions.length) {
+      throw new BadRequestException({
+        message: 'You havent answered all questions',
+      });
+    }
+
+    let score = 0;
+
+    for (const selectedOption of selectedOptions) {
+      const question = questions.find(
+        (question) => question.id === selectedOption.id,
+      );
+
+      const optionWeight =
+        question.options[selectedOption.selectedIndex].weight;
+
+      score += optionWeight;
+    }
+
+    if (score > 8) {
+      return 'Extrovert';
+    } else {
+      return 'Introvert';
+    }
   }
 }
