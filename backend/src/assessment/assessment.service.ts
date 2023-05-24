@@ -1,5 +1,9 @@
 import { InMemoryDBEntity } from '@nestjs-addons/in-memory-db';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { QuestionResponseDto } from './dtos/assessment.dto';
 
@@ -127,6 +131,12 @@ export class AssessmentService {
     selectedOptions: SelectedOption[],
   ): Promise<string> {
     const questions = await this.db.getAll();
+
+    if (selectedOptions.length !== questions.length) {
+      throw new BadRequestException({
+        message: 'You havent answered all questions',
+      });
+    }
 
     let score = 0;
 
