@@ -120,7 +120,7 @@ describe('AssessmentService', () => {
 
       jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
 
-      await service.getQuestionById('4').catch((error) => {
+      await service.getQuestionById('7').catch((error) => {
         expect(error).toBeInstanceOf(NotFoundException);
       });
     });
