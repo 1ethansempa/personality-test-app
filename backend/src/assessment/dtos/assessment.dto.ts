@@ -4,8 +4,8 @@ import {
   IsNotEmpty,
   IsArray,
   IsNumber,
-  IsPositive,
   ValidateNested,
+  Min,
 } from 'class-validator';
 
 class Option {
@@ -14,7 +14,7 @@ class Option {
   text: string;
 
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   weight: number;
 }
 
@@ -41,4 +41,21 @@ export class QuestionResponseDto {
   constructor(partial: Partial<QuestionResponseDto>) {
     Object.assign(this, partial);
   }
+}
+
+class SelectedOption {
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  @IsNumber()
+  @Min(0)
+  selectedIndex: number;
+}
+
+export class DetermineResultsDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => SelectedOption)
+  selectedOptions: SelectedOption[];
 }

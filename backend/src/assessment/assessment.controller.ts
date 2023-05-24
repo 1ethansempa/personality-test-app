@@ -1,6 +1,9 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { AssessmentService } from './assessment.service';
-import { QuestionResponseDto } from './dtos/assessment.dto';
+import {
+  QuestionResponseDto,
+  DetermineResultsDto,
+} from './dtos/assessment.dto';
 
 @Controller('assessment')
 export class AssessmentController {
@@ -14,5 +17,14 @@ export class AssessmentController {
   @Get('/questions/:id')
   async getQuestionById(@Param('id') id: string): Promise<QuestionResponseDto> {
     return await this.assessmentService.getQuestionById(id);
+  }
+
+  @Post('/results')
+  async determinePersonalityTrait(
+    @Body() body: DetermineResultsDto,
+  ): Promise<string> {
+    return await this.assessmentService.determinePersonalityTrait(
+      body.selectedOptions,
+    );
   }
 }

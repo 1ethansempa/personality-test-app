@@ -14,6 +14,11 @@ interface Option {
   weight: number;
 }
 
+export interface SelectedOption {
+  id: string;
+  selectedIndex: number;
+}
+
 @Injectable()
 export class AssessmentService {
   constructor(private readonly db: InMemoryDBService<Question>) {
@@ -116,5 +121,30 @@ export class AssessmentService {
     }
 
     return new QuestionResponseDto(questionMatchingId);
+  }
+
+  async determinePersonalityTrait(
+    selectedOptions: SelectedOption[],
+  ): Promise<string> {
+    const questions = await this.db.getAll();
+
+    let score = 0;
+
+    for (const selectedOption of selectedOptions) {
+      const question = questions.find(
+        (question) => question.id === selectedOption.id,
+      );
+
+      const optionWeight =
+        question.options[selectedOption.selectedIndex].weight;
+
+      score += optionWeight;
+    }
+
+    if (score > 8) {
+      return 'Extrovert';
+    } else {
+      return 'Introvert';
+    }
   }
 }
