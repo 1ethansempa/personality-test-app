@@ -244,5 +244,17 @@ describe('AssessmentService', () => {
         expect(error).toBeInstanceOf(BadRequestException);
       }
     });
+
+    it('should return a personality trait if all questions answered', async () => {
+      const mockResults = jest.fn().mockReturnValue('Introvert');
+
+      jest
+        .spyOn(service, 'determinePersonalityTrait')
+        .mockImplementation(mockResults);
+
+      const result = await service.determinePersonalityTrait(selectedOptions);
+
+      expect(result).toEqual('Introvert');
+    });
   });
 });
