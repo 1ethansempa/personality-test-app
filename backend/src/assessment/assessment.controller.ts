@@ -15,7 +15,7 @@ export class AssessmentController {
   }
 
   @Get('/questions/:id')
-  async getQuestionById(@Param('id') id: string): Promise<QuestionResponseDto> {
+  async getQuestionById(@Param('id') id: string) {
     return await this.assessmentService.getQuestionById(id);
   }
 

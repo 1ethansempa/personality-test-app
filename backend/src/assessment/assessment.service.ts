@@ -121,22 +121,14 @@ export class AssessmentService {
     });
   }
 
-  /**
-   * This function retrieves a question by its ID from a database and returns it as a
-   * QuestionResponseDto object, throwing a NotFoundException if no matching question is found.
-   * @param {string} id - The `id` parameter is a string representing the unique identifier of a
-   * question that is being requested. The function `getQuestionById` retrieves the question from a
-   * database using this identifier and returns it as a `QuestionResponseDto` object. If no question is
-   * found with the provided `id`, a
-   * @returns The function `getQuestionById` returns a `Promise` that resolves to a
-   * `QuestionResponseDto` object. This object is created using the `questionMatchingId` retrieved from
-   * the database and passed as an argument to the `QuestionResponseDto` constructor. If there is no
-   * question matching the provided id, a `NotFoundException` is thrown.
-   */
-  async getQuestionById(id: string): Promise<QuestionResponseDto> {
-    const questionMatchingId = await this.db.get(id);
+  async getQuestionById(id: string): Promise<{
+    question: QuestionResponseDto;
+    totalQuestions: number;
+    nextQuestionId: any;
+  }> {
+    const questions = await this.getQuestions();
 
-    console.log(questionMatchingId);
+    const questionMatchingId = questions.find((question) => question.id === id);
 
     if (questionMatchingId === null || questionMatchingId === undefined) {
       throw new NotFoundException({
@@ -144,7 +136,19 @@ export class AssessmentService {
       });
     }
 
-    return new QuestionResponseDto(questionMatchingId);
+    const formattedQuestion = new QuestionResponseDto(questionMatchingId);
+
+    let nextQuestionId = null;
+
+    if (questions.length !== parseInt(id)) {
+      nextQuestionId = parseInt(id) + 1;
+    }
+
+    return {
+      question: formattedQuestion,
+      totalQuestions: questions.length,
+      nextQuestionId,
+    };
   }
 
   /**
