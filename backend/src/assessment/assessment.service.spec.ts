@@ -194,34 +194,50 @@ describe('AssessmentService', () => {
     });
 
     it('should return question if question id exists', async () => {
-      const mockGetQuestion = jest
-        .fn()
-        .mockReturnValue(mockWeightlessQuestions[0]);
+      const mockGetQuestion = jest.fn().mockReturnValue({
+        question: mockWeightlessQuestions[0],
+        totalQuestions: 3,
+        nextQuestionId: '2',
+      });
 
-      jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
-
-      const question = await service.getQuestionById('1');
-
-      expect(question).toEqual(mockWeightlessQuestions[0]);
-    });
-
-    it('should check that question weight is not returned to user', async () => {
-      const mockGetQuestion = jest
-        .fn()
-        .mockReturnValue(mockWeightlessQuestions[0]);
-
-      jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
+      jest
+        .spyOn(service, 'getQuestionById')
+        .mockImplementation(mockGetQuestion);
 
       const question = await service.getQuestionById('1');
 
       expect(question).toEqual({
-        id: expect.any(String),
-        question: expect.any(String),
-        options: expect.arrayContaining([
-          expect.objectContaining({
-            text: expect.any(String),
-          }),
-        ]),
+        question: mockWeightlessQuestions[0],
+        totalQuestions: 3,
+        nextQuestionId: '2',
+      });
+    });
+
+    it('should check that question weight is not returned to user', async () => {
+      const mockGetQuestion = jest.fn().mockReturnValue({
+        question: mockWeightlessQuestions[0],
+        totalQuestions: 3,
+        nextQuestionId: '2',
+      });
+
+      jest
+        .spyOn(service, 'getQuestionById')
+        .mockImplementation(mockGetQuestion);
+
+      const question = await service.getQuestionById('1');
+
+      expect(question).toEqual({
+        question: expect.objectContaining({
+          id: expect.any(String),
+          question: expect.any(String),
+          options: expect.arrayContaining([
+            expect.objectContaining({
+              text: expect.any(String),
+            }),
+          ]),
+        }),
+        totalQuestions: expect.any(Number),
+        nextQuestionId: expect.any(String || null),
       });
     });
   });

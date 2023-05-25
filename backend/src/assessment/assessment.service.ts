@@ -121,10 +121,19 @@ export class AssessmentService {
     });
   }
 
+  /**
+   * This function retrieves a question by its ID and returns the question, total number of questions,
+   * and the ID of the next question.
+   * @param {string} id - a string representing the ID of the question to be retrieved.
+   * @returns An object with three properties: "question" which is a QuestionResponseDto object,
+   * "totalQuestions" which is a number representing the total number of questions, and "nextQuestionId"
+   * which is either null or the ID of the next question in the list. The function returns a Promise that
+   * resolves to this object.
+   */
   async getQuestionById(id: string): Promise<{
     question: QuestionResponseDto;
     totalQuestions: number;
-    nextQuestionId: any;
+    nextQuestionId: string;
   }> {
     const questions = await this.getQuestions();
 
@@ -136,16 +145,14 @@ export class AssessmentService {
       });
     }
 
-    const formattedQuestion = new QuestionResponseDto(questionMatchingId);
-
     let nextQuestionId = null;
 
     if (questions.length !== parseInt(id)) {
-      nextQuestionId = parseInt(id) + 1;
+      nextQuestionId = (parseInt(id) + 1).toString();
     }
 
     return {
-      question: formattedQuestion,
+      question: questionMatchingId,
       totalQuestions: questions.length,
       nextQuestionId,
     };
