@@ -1,8 +1,9 @@
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Logo from "../atoms/logo";
 import PrimaryButton from "../atoms/primary-button";
 
 function Navbar() {
+  const navigate = useNavigate();
   return (
     <div className="p-4 flex justify-between">
       <Logo />
@@ -11,7 +12,7 @@ function Navbar() {
         includeArrow={false}
         className="text-sm"
         clickAction={() => {
-          redirect("/");
+          navigate("/test", { replace: true });
         }}
       />
     </div>

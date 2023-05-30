@@ -5,7 +5,7 @@ function AppLayout({ children }: ChildrenProps) {
   return (
     <div className="h-screen lg:overflow-hidden font-lato">
       <Navbar />
-      {children}
+      <div className="bg-dark-white h-screen">{children}</div>
     </div>
   );
 }

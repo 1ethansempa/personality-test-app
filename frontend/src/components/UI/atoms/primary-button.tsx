@@ -9,7 +9,12 @@ interface PrimaryButtonProps extends InputProps {
   clickAction: () => void;
 }
 
-function PrimaryButton({ text, className, includeArrow }: PrimaryButtonProps) {
+function PrimaryButton({
+  text,
+  className,
+  includeArrow,
+  clickAction,
+}: PrimaryButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleHover = () => {
@@ -25,6 +30,7 @@ function PrimaryButton({ text, className, includeArrow }: PrimaryButtonProps) {
       className={`rounded-full bg-primary hover:bg-dark-primary px-4 py-4 cursor-pointer font-semibold text-white shadow-sm ${className}`}
       onMouseEnter={handleHover}
       onMouseLeave={handleMouseLeave}
+      onClick={clickAction}
     >
       <span>{text}</span>
       {includeArrow && (

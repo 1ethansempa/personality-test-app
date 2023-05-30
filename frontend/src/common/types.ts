@@ -5,3 +5,11 @@ export type ChildrenProps = {
 };
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement>;
+
+export type Question = {
+  id: string;
+  question: string;
+  options: {
+    text: string;
+  }[];
+};
