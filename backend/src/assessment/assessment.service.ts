@@ -1,9 +1,5 @@
 import { InMemoryDBEntity } from '@nestjs-addons/in-memory-db';
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { QuestionResponseDto } from './dtos/assessment.dto';
 
@@ -119,43 +115,6 @@ export class AssessmentService {
     return questions.map((question) => {
       return new QuestionResponseDto(question);
     });
-  }
-
-  /**
-   * This function retrieves a question by its ID and returns the question, total number of questions,
-   * and the ID of the next question.
-   * @param {string} id - a string representing the ID of the question to be retrieved.
-   * @returns An object with three properties: "question" which is a QuestionResponseDto object,
-   * "totalQuestions" which is a number representing the total number of questions, and "nextQuestionId"
-   * which is either null or the ID of the next question in the list. The function returns a Promise that
-   * resolves to this object.
-   */
-  async getQuestionById(id: string): Promise<{
-    question: QuestionResponseDto;
-    totalQuestions: number;
-    nextQuestionId: string;
-  }> {
-    const questions = await this.getQuestions();
-
-    const questionMatchingId = questions.find((question) => question.id === id);
-
-    if (questionMatchingId === null || questionMatchingId === undefined) {
-      throw new NotFoundException({
-        message: 'No question matching id you provided',
-      });
-    }
-
-    let nextQuestionId = null;
-
-    if (questions.length !== parseInt(id)) {
-      nextQuestionId = (parseInt(id) + 1).toString();
-    }
-
-    return {
-      question: questionMatchingId,
-      totalQuestions: questions.length,
-      nextQuestionId,
-    };
   }
 
   /**
