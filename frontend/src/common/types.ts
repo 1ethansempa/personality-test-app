@@ -13,3 +13,8 @@ export type Question = {
     text: string;
   }[];
 };
+
+export type SelectedOption = {
+  id: string;
+  selectedIndex: number;
+};

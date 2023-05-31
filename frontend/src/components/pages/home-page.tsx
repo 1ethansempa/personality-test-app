@@ -9,7 +9,7 @@ function HomePage() {
         <img src="curious-people.png" alt="Person Thinking" loading="lazy" />
       </div>
       <div className="flex flex-col items-center justify-center my-4">
-        <div className="text-3xl my-3 text-center font-semibold">
+        <div className="text-3xl my-3 text-center font-semibold text-green-black">
           “Within the depths of self-discovery, one finds the power to transcend
           limitations, unleash hidden potentials, and become the masterpiece
           they ought to be.”
