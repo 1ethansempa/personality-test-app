@@ -11,8 +11,11 @@ interface QuestionCardProps {
   totalQuestions: number;
   isOptionSelected: (id: string, index: number) => boolean;
   handleOptionSelect: (id: string, index: number) => void;
-  btnText: string;
+  nextBtnText: string;
+  prevBtnText: string;
   isQuestionAnswered: (id: string) => boolean;
+  handleNext: () => void;
+  handlePrevious: () => void;
 }
 
 function QuestionCard({
@@ -21,8 +24,11 @@ function QuestionCard({
   totalQuestions,
   isOptionSelected,
   handleOptionSelect,
-  btnText,
+  nextBtnText,
+  prevBtnText,
   isQuestionAnswered,
+  handleNext,
+  handlePrevious,
 }: QuestionCardProps) {
   return (
     <Card>
@@ -38,11 +44,20 @@ function QuestionCard({
       />
       <div className="flex items-center justify-center my-4">
         <PrimaryButton
-          text={btnText}
-          className="text-sm py-4 px-12"
+          text={prevBtnText}
+          className="text-sm mr-6 py-4 px-12 w-40"
           includeArrow={true}
-          clickAction={() => {}}
+          clickAction={handlePrevious}
+          enabled={currentQuestionNumber !== 1}
+          arrowDirection="left"
+        />
+        <PrimaryButton
+          text={nextBtnText}
+          className="text-sm py-4 px-12 w-40"
+          includeArrow={true}
+          clickAction={handleNext}
           enabled={isQuestionAnswered(question.id)}
+          arrowDirection="right"
         />
       </div>
     </Card>

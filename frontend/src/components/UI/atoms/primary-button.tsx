@@ -1,6 +1,7 @@
 import { InputProps } from "../../../common/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
 interface PrimaryButtonProps extends InputProps {
@@ -8,6 +9,7 @@ interface PrimaryButtonProps extends InputProps {
   includeArrow: boolean;
   clickAction: () => void;
   enabled: boolean;
+  arrowDirection?: "right" | "left";
 }
 
 function PrimaryButton({
@@ -16,6 +18,7 @@ function PrimaryButton({
   includeArrow,
   clickAction,
   enabled,
+  arrowDirection,
 }: PrimaryButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -39,15 +42,36 @@ function PrimaryButton({
       onClick={clickAction}
       disabled={!enabled}
     >
-      <span>{text}</span>
-      {includeArrow && (
-        <FontAwesomeIcon
-          icon={faArrowRight}
-          color="white"
-          className={`px-2 ${
-            isHovered ? "ease-in duration-100 translate-x-1" : ""
-          }`}
-        />
+      {arrowDirection ? (
+        arrowDirection === "right" ? (
+          <>
+            <span>{text}</span>
+            {includeArrow && (
+              <FontAwesomeIcon
+                icon={faArrowRight}
+                color="white"
+                className={`px-2 ${
+                  isHovered ? "ease-in duration-100 translate-x-1" : ""
+                }`}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            {includeArrow && (
+              <FontAwesomeIcon
+                icon={faArrowLeft}
+                color="white"
+                className={`px-2 ${
+                  isHovered ? "ease-in duration-100 translate-x-1" : ""
+                }`}
+              />
+            )}
+            <span>{text}</span>
+          </>
+        )
+      ) : (
+        <span>{text}</span>
       )}
     </button>
   );

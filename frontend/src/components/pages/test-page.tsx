@@ -10,7 +10,8 @@ function TestPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>([]);
-  const [btnText, setBtnText] = useState("Next");
+  const [nextBtnText, setNextBtnText] = useState("Next");
+  const [prevBtnText, setPrevBtnText] = useState("Previous");
 
   const fetchQuestions = async () => {
     const questionsResponse = await axios.get(
@@ -27,7 +28,7 @@ function TestPage() {
       console.log(questionsResponse.data);
       setQuestions(questionsResponse.data);
       setStep(1);
-      setBtnText("Next");
+      setNextBtnText("Next");
     }
 
     setLoading(false);
@@ -84,6 +85,25 @@ function TestPage() {
     }
   };
 
+  const increaseStep = () => {
+    if (step < questions.length - 1) {
+      setStep(step + 1);
+      setNextBtnText("Next");
+    } else {
+      setStep(questions.length);
+      setNextBtnText("Get Results");
+    }
+  };
+
+  const decreaseStep = () => {
+    if (step === 1) {
+      setStep(1);
+    } else {
+      setStep(step - 1);
+      setNextBtnText("Next");
+    }
+  };
+
   useEffect(() => {
     fetchQuestions();
   }, []);
@@ -100,8 +120,11 @@ function TestPage() {
             totalQuestions={questions.length}
             isOptionSelected={isOptionSelected}
             handleOptionSelect={handleOptionSelect}
-            btnText={btnText}
+            nextBtnText={nextBtnText}
+            prevBtnText={prevBtnText}
             isQuestionAnswered={isQuestionAnswered}
+            handleNext={increaseStep}
+            handlePrevious={decreaseStep}
           />
         )}
       </div>
