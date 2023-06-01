@@ -6,7 +6,7 @@ export type ChildrenProps = {
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement>;
 
-export type Question = {
+export type QuestionType = {
   id: string;
   question: string;
   options: {

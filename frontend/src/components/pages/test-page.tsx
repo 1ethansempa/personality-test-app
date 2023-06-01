@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Question } from "../../common/types";
+import { QuestionType } from "../../common/types";
 import axios from "axios";
-import PrimaryButton from "../UI/atoms/primary-button";
-import Card from "../UI/atoms/card";
-import QuestionOption from "../UI/atoms/question-option";
 import { SelectedOption } from "../../common/types";
+import QuestionCard from "../UI/organisms/question-card";
 
 function TestPage() {
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<QuestionType[]>([]);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>([]);
+  const [btnText, setBtnText] = useState("Next");
 
   const fetchQuestions = async () => {
     const questionsResponse = await axios.get(
@@ -27,6 +26,7 @@ function TestPage() {
       console.log(questionsResponse.data);
       setQuestions(questionsResponse.data);
       setStep(1);
+      setBtnText("Next");
     }
 
     setLoading(false);
@@ -83,39 +83,14 @@ function TestPage() {
         {loading ? (
           <>Loading ....</>
         ) : (
-          <Card>
-            <p className="text-gray-600">{`Question ${step} / ${questions.length}`}</p>
-            <p className="text-green-black font-bold text-xl">
-              {questions[0].question}
-            </p>
-            <small className="text-gray-400 italic">
-              All questions are required
-            </small>
-
-            <ul>
-              {questions[0].options.map((option, index) => {
-                return (
-                  <QuestionOption
-                    isSelected={isOptionSelected(questions[0].id, index)}
-                    text={option.text}
-                    questionId={questions[0].id}
-                    index={index}
-                    handleOptionSelect={() =>
-                      handleOptionSelect(questions[0].id, index)
-                    }
-                  />
-                );
-              })}
-            </ul>
-            <div className="flex items-center justify-center my-4">
-              <PrimaryButton
-                text="Next"
-                className="text-sm py-4 px-12"
-                includeArrow={true}
-                clickAction={() => {}}
-              />
-            </div>
-          </Card>
+          <QuestionCard
+            question={questions[step - 1]}
+            currentQuestionNumber={step}
+            totalQuestions={questions.length}
+            isOptionSelected={isOptionSelected}
+            handleOptionSelect={handleOptionSelect}
+            btnText={btnText}
+          />
         )}
       </div>
     </div>
