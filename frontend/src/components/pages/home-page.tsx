@@ -26,6 +26,7 @@ function HomePage() {
           clickAction={() => {
             navigate("/test", { replace: true });
           }}
+          enabled={true}
         />
       </div>
       <div className="hidden md:flex items-center justify-center my-4">

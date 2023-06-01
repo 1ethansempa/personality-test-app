@@ -12,6 +12,7 @@ interface QuestionCardProps {
   isOptionSelected: (id: string, index: number) => boolean;
   handleOptionSelect: (id: string, index: number) => void;
   btnText: string;
+  isQuestionAnswered: (id: string) => boolean;
 }
 
 function QuestionCard({
@@ -21,6 +22,7 @@ function QuestionCard({
   isOptionSelected,
   handleOptionSelect,
   btnText,
+  isQuestionAnswered,
 }: QuestionCardProps) {
   return (
     <Card>
@@ -40,6 +42,7 @@ function QuestionCard({
           className="text-sm py-4 px-12"
           includeArrow={true}
           clickAction={() => {}}
+          enabled={isQuestionAnswered(question.id)}
         />
       </div>
     </Card>

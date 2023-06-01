@@ -19,6 +19,7 @@ function NotFoundPage() {
           clickAction={() => {
             navigate("/", { replace: true });
           }}
+          enabled={true}
         />
       </div>
     </div>

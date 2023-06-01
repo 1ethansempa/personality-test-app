@@ -7,6 +7,7 @@ interface PrimaryButtonProps extends InputProps {
   text: string;
   includeArrow: boolean;
   clickAction: () => void;
+  enabled: boolean;
 }
 
 function PrimaryButton({
@@ -14,6 +15,7 @@ function PrimaryButton({
   className,
   includeArrow,
   clickAction,
+  enabled,
 }: PrimaryButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -26,11 +28,16 @@ function PrimaryButton({
   };
 
   return (
-    <div
-      className={`rounded-full bg-primary hover:bg-dark-primary px-4 py-4 cursor-pointer font-semibold text-white shadow-sm ${className}`}
+    <button
+      className={`rounded-full px-4 py-4 font-semibold text-white shadow-sm ${className} ${
+        enabled
+          ? "bg-primary  hover:bg-dark-primary "
+          : "bg-primary-disabled cursor-not-allowed"
+      }`}
       onMouseEnter={handleHover}
       onMouseLeave={handleMouseLeave}
       onClick={clickAction}
+      disabled={!enabled}
     >
       <span>{text}</span>
       {includeArrow && (
@@ -42,7 +49,7 @@ function PrimaryButton({
           }`}
         />
       )}
-    </div>
+    </button>
   );
 }
 

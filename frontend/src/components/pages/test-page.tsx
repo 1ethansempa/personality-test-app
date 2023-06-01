@@ -74,6 +74,16 @@ function TestPage() {
     return false;
   };
 
+  const isQuestionAnswered = (id: string) => {
+    const selectedOption = selectedOptions.find((option) => option.id === id);
+
+    if (selectedOption) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   useEffect(() => {
     fetchQuestions();
   }, []);
@@ -91,6 +101,7 @@ function TestPage() {
             isOptionSelected={isOptionSelected}
             handleOptionSelect={handleOptionSelect}
             btnText={btnText}
+            isQuestionAnswered={isQuestionAnswered}
           />
         )}
       </div>

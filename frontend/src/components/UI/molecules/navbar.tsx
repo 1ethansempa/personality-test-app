@@ -14,6 +14,7 @@ function Navbar() {
         clickAction={() => {
           navigate("/test", { replace: true });
         }}
+        enabled={true}
       />
     </div>
   );
