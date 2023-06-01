@@ -4,6 +4,9 @@ import axios from "axios";
 import { SelectedOption } from "../../common/types";
 import QuestionCard from "../UI/organisms/question-card";
 import QuestionCardSkeleton from "../UI/atoms/skeletons/question-card-skeleton";
+import { useAppDispatch } from "../../store";
+import { updateSelectedOptions } from "../../slices/question";
+import { useNavigate } from "react-router-dom";
 
 function TestPage() {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -13,23 +16,30 @@ function TestPage() {
   const [nextBtnText, setNextBtnText] = useState("Next");
   const [prevBtnText, setPrevBtnText] = useState("Previous");
 
-  const fetchQuestions = async () => {
-    const questionsResponse = await axios.get(
-      `http://localhost:4000/assessment/questions`,
-      {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-    if (questionsResponse.data) {
-      console.log(questionsResponse.data);
-      setQuestions(questionsResponse.data);
-      setStep(1);
-      setNextBtnText("Next");
-    }
+  const fetchQuestions = async () => {
+    setLoading(true);
+
+    try {
+      const questionsResponse = await axios.get(
+        `http://localhost:4000/assessment/questions`,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (questionsResponse.data) {
+        console.log(questionsResponse.data);
+        setQuestions(questionsResponse.data);
+        setStep(1);
+        setNextBtnText("Next");
+      }
+    } catch (error: any) {}
 
     setLoading(false);
   };
@@ -86,12 +96,18 @@ function TestPage() {
   };
 
   const increaseStep = () => {
-    if (step < questions.length - 1) {
-      setStep(step + 1);
-      setNextBtnText("Next");
+    if (step === questions.length) {
+      dispatch(updateSelectedOptions(selectedOptions));
+
+      navigate("/results", { replace: true });
     } else {
-      setStep(questions.length);
-      setNextBtnText("Get Results");
+      if (step < questions.length - 1) {
+        setStep(step + 1);
+        setNextBtnText("Next");
+      } else {
+        setStep(questions.length);
+        setNextBtnText("Get Results");
+      }
     }
   };
 

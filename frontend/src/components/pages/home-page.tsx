@@ -26,6 +26,7 @@ function HomePage() {
           clickAction={() => {
             navigate("/test", { replace: true });
           }}
+          arrowDirection="right"
           enabled={true}
         />
       </div>
