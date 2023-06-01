@@ -3,6 +3,7 @@ import { QuestionType } from "../../common/types";
 import axios from "axios";
 import { SelectedOption } from "../../common/types";
 import QuestionCard from "../UI/organisms/question-card";
+import QuestionCardSkeleton from "../UI/atoms/skeletons/question-card-skeleton";
 
 function TestPage() {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -81,7 +82,7 @@ function TestPage() {
     <div className="p-8">
       <div className="flex items-center justify-center mt-16">
         {loading ? (
-          <>Loading ....</>
+          <QuestionCardSkeleton />
         ) : (
           <QuestionCard
             question={questions[step - 1]}
