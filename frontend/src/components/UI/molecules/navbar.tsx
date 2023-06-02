@@ -5,7 +5,7 @@ import PrimaryButton from "../atoms/primary-button";
 function Navbar() {
   const navigate = useNavigate();
   return (
-    <div className="p-4 flex justify-between">
+    <div className="p-4 flex justify-between bg-white">
       <Logo />
       <PrimaryButton
         text="Take the test"

@@ -8,6 +8,7 @@ import { updateSelectedOptions } from "../../slices/question";
 import { useNavigate } from "react-router-dom";
 import LazyLoadedImage from "../UI/atoms/lazy-loaded-image";
 import { api } from "../../services";
+import ErrorBlock from "../UI/molecules/error-block";
 
 function TestPage() {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -173,10 +174,7 @@ function TestPage() {
             handlePrevious={decreaseStep}
           />
         ) : (
-          <div className="flex flex-col items-center justify-center my-4">
-            <LazyLoadedImage src="server-error.png" alt="Server Error" />
-            <div className="my-3">Server is offline or under maintenance.</div>
-          </div>
+          <ErrorBlock error="Server is offline / under maintenance." />
         )}
       </div>
     </div>
