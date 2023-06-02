@@ -30,7 +30,7 @@ function QuestionOption({
     >
       <span
         className={`flex items-center mr-2  text-white h-6 p-2 mb-2 uppercase shadow ${
-          isSelected ? "bg-secondary" : "bg-gray-400"
+          isSelected ? "bg-secondary" : "bg-gray-500"
         }`}
       >
         {calculateLetter(index)}

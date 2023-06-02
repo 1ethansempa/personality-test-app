@@ -15,7 +15,6 @@ function TestPage() {
   const [loading, setLoading] = useState(true);
   const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>([]);
   const [nextBtnText, setNextBtnText] = useState("Next");
-  const [prevBtnText, setPrevBtnText] = useState("Previous");
   const [fetchError, setFetchError] = useState(false);
 
   const dispatch = useAppDispatch();
@@ -142,7 +141,7 @@ function TestPage() {
             isOptionSelected={isOptionSelected}
             handleOptionSelect={handleOptionSelect}
             nextBtnText={nextBtnText}
-            prevBtnText={prevBtnText}
+            prevBtnText={`Previous`}
             isQuestionAnswered={isQuestionAnswered}
             handleNext={increaseStep}
             handlePrevious={decreaseStep}
