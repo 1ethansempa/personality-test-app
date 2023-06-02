@@ -1,6 +1,7 @@
 import { InMemoryDBEntity } from '@nestjs-addons/in-memory-db';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
+import { QuestionResponseDto } from './dtos/assessment.dto';
 
 export interface Question extends InMemoryDBEntity {
   id: string;
@@ -11,6 +12,11 @@ export interface Question extends InMemoryDBEntity {
 interface Option {
   text: string;
   weight: number;
+}
+
+export interface SelectedOption {
+  id: string;
+  selectedIndex: number;
 }
 
 @Injectable()
@@ -95,21 +101,58 @@ export class AssessmentService {
     await this.db.createMany(questions);
   }
 
-  async getQuestions(): Promise<Question[]> {
-    return await this.db.getAll();
+  /**
+   * This function retrieves all questions from a database and returns them as an array of
+   * QuestionResponseDto objects.
+   * @returns The `getQuestions()` function is returning an array of `QuestionResponseDto` objects. The
+   * function retrieves all questions from a database using the `getAll()` method and then maps each
+   * question to a `QuestionResponseDto` object using the `QuestionResponseDto` constructor. The
+   * resulting array of `QuestionResponseDto` objects is then returned.
+   */
+  async getQuestions(): Promise<QuestionResponseDto[]> {
+    const questions = await this.db.getAll();
+
+    return questions.map((question) => {
+      return new QuestionResponseDto(question);
+    });
   }
 
-  async getQuestionById(id: string): Promise<Question> {
-    const questionMatchingId = await this.db.get(id);
+  /**
+   * This function determines a personality trait based on selected options and returns it as a string.
+   * @param {SelectedOption[]} selectedOptions - An array of objects representing the user's selected
+   * options for each question in the personality quiz. Each object has two properties: "id" (the ID of
+   * the question) and "selectedIndex" (the index of the selected option for that question).
+   * @returns a string that represents the personality trait determined based on the selected options. If
+   * the score is greater than 8, the function returns 'Extrovert', otherwise it returns 'Introvert'.
+   */
+  async determinePersonalityTrait(
+    selectedOptions: SelectedOption[],
+  ): Promise<string> {
+    const questions = await this.db.getAll();
 
-    console.log(questionMatchingId);
-
-    if (questionMatchingId === null || questionMatchingId === undefined) {
-      throw new NotFoundException({
-        message: 'No question matching id you provided',
+    if (selectedOptions.length !== questions.length) {
+      throw new BadRequestException({
+        message: 'You havent answered all questions',
       });
     }
 
-    return questionMatchingId;
+    let score = 0;
+
+    for (const selectedOption of selectedOptions) {
+      const question = questions.find(
+        (question) => question.id === selectedOption.id,
+      );
+
+      const optionWeight =
+        question.options[selectedOption.selectedIndex].weight;
+
+      score += optionWeight;
+    }
+
+    if (score > 8) {
+      return 'Extrovert';
+    } else {
+      return 'Introvert';
+    }
   }
 }
