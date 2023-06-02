@@ -6,7 +6,7 @@ function NotFoundPage() {
   const navigate = useNavigate();
   return (
     <div className="p-8">
-      <div className="lg:mt-16 mt-24">
+      <div className="lg:mt-12 mt-24">
         <ErrorBlock
           error=" It appears the page you're looking for doesn't exist."
           action={() => {
