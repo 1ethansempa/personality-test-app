@@ -3,9 +3,9 @@ import Navbar from "../UI/molecules/navbar";
 
 function AppLayout({ children }: ChildrenProps) {
   return (
-    <div className="h-screen lg:overflow-hidden font-lato">
+    <div className="min-h-screen bg-dark-white font-lato">
       <Navbar />
-      <div className="bg-dark-white h-screen">{children}</div>
+      {children}
     </div>
   );
 }

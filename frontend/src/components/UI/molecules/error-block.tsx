@@ -11,7 +11,11 @@ interface ErrorBlockProps {
 function ErrorBlock({ error, action, actionText }: ErrorBlockProps) {
   return (
     <div className="flex flex-col items-center justify-center my-4">
-      <LazyLoadedImage src="server-error.png" className="h-96" alt="Error" />
+      <LazyLoadedImage
+        src="server-error.png"
+        className="lg:h-96 h-64"
+        alt="Error"
+      />
       <div className="my-2">{error}</div>
       {action && actionText && (
         <PrimaryButton

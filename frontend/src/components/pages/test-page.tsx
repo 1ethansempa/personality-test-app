@@ -130,7 +130,7 @@ function TestPage() {
 
   return (
     <div className="p-8">
-      <div className="flex items-center justify-center mt-16">
+      <div className="flex items-center justify-center lg:mt-16 md:mt-20 mt-12">
         {loading ? (
           <QuestionCardSkeleton />
         ) : !fetchError ? (

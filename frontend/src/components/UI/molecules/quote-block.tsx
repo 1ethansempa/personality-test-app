@@ -24,7 +24,9 @@ function QuoteBlock({
     <div className="flex flex-col items-center justify-center my-4 max-w-lg text-center">
       <Quote text={quoteText} />
       <div className="text-sm my-3">{smallText}</div>
-      {src && alt && <LazyLoadedImage src={src} alt={alt} className="h-96" />}
+      {src && alt && (
+        <LazyLoadedImage src={src} alt={alt} className="lg:h-96 h-64" />
+      )}
       {action && actionText && (
         <PrimaryButton
           text={actionText}

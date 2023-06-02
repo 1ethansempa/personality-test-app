@@ -59,7 +59,7 @@ function ResultsPage() {
 
   return (
     <div className="p-8">
-      <div className="flex items-center flex-col justify-center mt-8">
+      <div className="flex items-center flex-col justify-center lg:mt-8 mt-16">
         {loading ? (
           <>Loading ....</>
         ) : !fetchError ? (

@@ -10,7 +10,7 @@ function Navbar() {
       <PrimaryButton
         text="Take the test"
         includeArrow={false}
-        className="text-sm py-4 px-8"
+        className="text-sm lg:py-4 py-2 lg:px-8 px-6"
         clickAction={() => {
           navigate("/test", { replace: true });
         }}
