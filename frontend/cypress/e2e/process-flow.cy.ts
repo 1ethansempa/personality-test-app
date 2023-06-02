@@ -3,7 +3,7 @@ describe("process flow test", () => {
     cy.visit("/");
   });
 
-  it("clicks test button", () => {
+  it("normal test process flow works", () => {
     cy.visit("/");
 
     cy.intercept("GET", "http://localhost:4000/assessment/questions", {

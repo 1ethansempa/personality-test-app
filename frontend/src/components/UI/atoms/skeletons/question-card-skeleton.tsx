@@ -2,7 +2,7 @@ import React from "react";
 
 function QuestionCardSkeleton() {
   return (
-    <div className="lg:w-[28rem] p-6 bg-white border border-gray-200 lg:rounded-3xl rounded-2xl lg:shadow-lg shadow-md animate-pulse">
+    <div className="lg:w-[28rem] w-[35rem] p-6 bg-white border border-gray-200 lg:rounded-3xl rounded-2xl lg:shadow-lg shadow-md animate-pulse">
       <div className="bg-gray-300 w-full h-8 rounded-full"></div>
       <div className="bg-gray-300 w-32 h-4 my-2 rounded-full"></div>
       <ul>
