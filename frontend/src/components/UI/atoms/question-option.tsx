@@ -27,6 +27,7 @@ function QuestionOption({
         isSelected ? "border-secondary font-bold" : "border-[#dfe5ec]"
       }`}
       onClick={() => handleOptionSelect(questionId, index)}
+      data-cy="question-option"
     >
       <span
         className={`flex items-center mr-2  text-white h-6 p-2 mb-2 uppercase shadow ${

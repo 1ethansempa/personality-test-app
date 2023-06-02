@@ -41,6 +41,7 @@ function PrimaryButton({
       onMouseLeave={handleMouseLeave}
       onClick={clickAction}
       disabled={!enabled}
+      data-cy="primary-button"
     >
       {arrowDirection ? (
         arrowDirection === "right" ? (
