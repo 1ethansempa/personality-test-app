@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1",
+    "question": "You’re really busy at work and a work colleague is telling you their life story and personal woes. You:",
+    "options": [
+      {
+        "text": "Don’t dare to interrupt them"
+      },
+      {
+        "text": "Think it’s more important to give them some of your time; work can wait"
+      },
+      {
+        "text": "Listen, but with only with half an ear"
+      },
+      {
+        "text": "Interrupt and explain that you are really busy at the moment"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "question": "You’ve been sitting in the doctor’s waiting room for more than 25 minutes. You:",
+    "options": [
+      {
+        "text": "Look at your watch every two minutes"
+      },
+      {
+        "text": "Bubble with inner anger, but keep quiet"
+      },
+      {
+        "text": "Explain to other equally impatient people in the room that the doctor is always running late"
+      },
+      {
+        "text": "Complain in a loud voice, while tapping your foot impatiently"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "question": "You’re having an animated discussion with a colleague regarding a project that you’re in charge of. You:",
+    "options": [
+      {
+        "text": "Don’t dare contradict them"
+      },
+      {
+        "text": "Think that they are obviously right"
+      },
+      {
+        "text": "Defend your own point of view, tooth and nail"
+      },
+      {
+        "text": "Continuously interrupt your colleague"
+      }
+    ]
+  }
+]

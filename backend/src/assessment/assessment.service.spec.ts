@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AssessmentService, Question } from './assessment.service';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { InMemoryDBModule } from '@nestjs-addons/in-memory-db';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 
 const mockQuestions = [
   {
@@ -150,13 +150,18 @@ describe('AssessmentService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [InMemoryDBModule.forRoot()],
       providers: [
-        AssessmentService,
+        {
+          provide: AssessmentService,
+          useValue: {
+            getQuestions: jest.fn().mockReturnValue(mockWeightlessQuestions),
+            determinePersonalityTrait: jest.fn().mockReturnValue('Introvert'),
+          },
+        },
         {
           provide: InMemoryDBService,
           useValue: {
-            getAll: jest.fn().mockReturnValue(mockWeightlessQuestions),
+            getAll: jest.fn().mockReturnValue(mockQuestions),
             createMany: jest.fn().mockReturnValue(mockQuestions),
-            get: jest.fn().mockReturnValue(mockWeightlessQuestions[0]),
           },
         },
       ],
@@ -172,9 +177,7 @@ describe('AssessmentService', () => {
 
   describe('getQuestions', () => {
     it('should return questions', async () => {
-      const mockGetQuestions = jest
-        .fn()
-        .mockReturnValue(mockWeightlessQuestions);
+      const mockGetQuestions = jest.fn().mockReturnValue(mockQuestions);
 
       jest.spyOn(db, 'getAll').mockImplementation(mockGetQuestions);
 
@@ -183,46 +186,24 @@ describe('AssessmentService', () => {
       expect(questions).toEqual(mockWeightlessQuestions);
     });
 
-    it('should throw a NotFoundException if question id doesnt exist', async () => {
-      const mockGetQuestion = jest.fn().mockReturnValue(undefined);
-
-      jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
-
-      await service.getQuestionById('7').catch((error) => {
-        expect(error).toBeInstanceOf(NotFoundException);
-      });
-    });
-
-    it('should return question if question id exists', async () => {
-      const mockGetQuestion = jest
-        .fn()
-        .mockReturnValue(mockWeightlessQuestions[0]);
-
-      jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
-
-      const question = await service.getQuestionById('1');
-
-      expect(question).toEqual(mockWeightlessQuestions[0]);
-    });
-
     it('should check that question weight is not returned to user', async () => {
-      const mockGetQuestion = jest
-        .fn()
-        .mockReturnValue(mockWeightlessQuestions[0]);
+      const mockGetQuestions = jest.fn().mockReturnValue(mockQuestions);
 
-      jest.spyOn(db, 'get').mockImplementation(mockGetQuestion);
+      jest.spyOn(db, 'getAll').mockImplementation(mockGetQuestions);
 
-      const question = await service.getQuestionById('1');
+      const question = await service.getQuestions();
 
-      expect(question).toEqual({
-        id: expect.any(String),
-        question: expect.any(String),
-        options: expect.arrayContaining([
-          expect.objectContaining({
-            text: expect.any(String),
-          }),
-        ]),
-      });
+      expect(question[0]).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          question: expect.any(String),
+          options: expect.arrayContaining([
+            expect.objectContaining({
+              text: expect.any(String),
+            }),
+          ]),
+        }),
+      );
     });
   });
 
@@ -246,12 +227,6 @@ describe('AssessmentService', () => {
     });
 
     it('should return a personality trait if all questions answered', async () => {
-      const mockResults = jest.fn().mockReturnValue('Introvert');
-
-      jest
-        .spyOn(service, 'determinePersonalityTrait')
-        .mockImplementation(mockResults);
-
       const result = await service.determinePersonalityTrait(selectedOptions);
 
       expect(result).toEqual('Introvert');

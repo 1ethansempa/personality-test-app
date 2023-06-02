@@ -1,9 +1,5 @@
 import { InMemoryDBEntity } from '@nestjs-addons/in-memory-db';
-import {
-  Injectable,
-  BadRequestException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InMemoryDBService } from '@nestjs-addons/in-memory-db';
 import { QuestionResponseDto } from './dtos/assessment.dto';
 
@@ -119,32 +115,6 @@ export class AssessmentService {
     return questions.map((question) => {
       return new QuestionResponseDto(question);
     });
-  }
-
-  /**
-   * This function retrieves a question by its ID from a database and returns it as a
-   * QuestionResponseDto object, throwing a NotFoundException if no matching question is found.
-   * @param {string} id - The `id` parameter is a string representing the unique identifier of a
-   * question that is being requested. The function `getQuestionById` retrieves the question from a
-   * database using this identifier and returns it as a `QuestionResponseDto` object. If no question is
-   * found with the provided `id`, a
-   * @returns The function `getQuestionById` returns a `Promise` that resolves to a
-   * `QuestionResponseDto` object. This object is created using the `questionMatchingId` retrieved from
-   * the database and passed as an argument to the `QuestionResponseDto` constructor. If there is no
-   * question matching the provided id, a `NotFoundException` is thrown.
-   */
-  async getQuestionById(id: string): Promise<QuestionResponseDto> {
-    const questionMatchingId = await this.db.get(id);
-
-    console.log(questionMatchingId);
-
-    if (questionMatchingId === null || questionMatchingId === undefined) {
-      throw new NotFoundException({
-        message: 'No question matching id you provided',
-      });
-    }
-
-    return new QuestionResponseDto(questionMatchingId);
   }
 
   /**
