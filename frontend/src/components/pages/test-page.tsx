@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { QuestionType } from "../../common/types";
-import axios from "axios";
 import { SelectedOption } from "../../common/types";
 import QuestionCard from "../UI/organisms/question-card";
 import QuestionCardSkeleton from "../UI/atoms/skeletons/question-card-skeleton";
@@ -8,6 +7,7 @@ import { useAppDispatch } from "../../store";
 import { updateSelectedOptions } from "../../slices/question";
 import { useNavigate } from "react-router-dom";
 import LazyLoadedImage from "../UI/atoms/lazy-loaded-image";
+import { api } from "../../services";
 
 function TestPage() {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -20,19 +20,14 @@ function TestPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  /**
+   * Handles fetching of questions
+   */
   const fetchQuestions = async () => {
     setLoading(true);
 
     try {
-      const questionsResponse = await axios.get(
-        `http://localhost:4000/assessment/questions`,
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const questionsResponse = await api.get(`/assessment/questions`);
 
       if (questionsResponse.data) {
         setQuestions(questionsResponse.data);
@@ -48,17 +43,26 @@ function TestPage() {
     setLoading(false);
   };
 
-  const handleOptionSelect = (id: string, selectedIndex: number) => {
+  /**
+   * The `handleOptionSelect` function handles the selection of an option.
+   *
+   * @param {string} questionId The ID of the question.
+   * @param {number} questionIndex The index of the question.
+   */
+  const handleOptionSelect = (
+    questionId: string,
+    questionIndex: number
+  ): void => {
     const selectedOptionIndex = selectedOptions.findIndex(
-      (selectedOption) => selectedOption.id === id
+      (selectedOption) => selectedOption.id === questionId
     );
 
     if (selectedOptionIndex === -1) {
       const newSelectedOptions = [
         ...selectedOptions,
         {
-          id,
-          selectedIndex,
+          id: questionId,
+          selectedIndex: questionIndex,
         },
       ];
 
@@ -68,18 +72,27 @@ function TestPage() {
         const updatedSelectedOptions = [...prevSelectedOptions];
 
         updatedSelectedOptions[selectedOptionIndex].selectedIndex =
-          selectedIndex;
+          questionIndex;
 
         return updatedSelectedOptions;
       });
     }
   };
 
-  const isOptionSelected = (id: string, selectedIndex: number) => {
-    const selectedOption = selectedOptions.find((option) => option.id === id);
+  /**
+   * Checks if the given option is selected.
+   *
+   * @param {string} questionId The ID of the question.
+   * @param {number} questionIndex The index of the question.
+   * @returns a boolean.
+   */
+  const isOptionSelected = (questionId: string, questionIndex: number) => {
+    const selectedOption = selectedOptions.find(
+      (option) => option.id === questionId
+    );
 
     if (selectedOption) {
-      if (selectedOption.selectedIndex !== selectedIndex) {
+      if (selectedOption.selectedIndex !== questionIndex) {
         return false;
       } else {
         return true;
@@ -89,8 +102,15 @@ function TestPage() {
     return false;
   };
 
-  const isQuestionAnswered = (id: string) => {
-    const selectedOption = selectedOptions.find((option) => option.id === id);
+  /**
+   * Checks if question is answered.
+   * @param questionId  The ID of the question.
+   * @returns a boolean.
+   */
+  const isQuestionAnswered = (questionId: string) => {
+    const selectedOption = selectedOptions.find(
+      (option) => option.id === questionId
+    );
 
     if (selectedOption) {
       return true;
@@ -99,6 +119,9 @@ function TestPage() {
     }
   };
 
+  /**
+   * Function to increase the step / redirect to results page
+   */
   const increaseStep = () => {
     if (step === questions.length) {
       dispatch(updateSelectedOptions(selectedOptions));
@@ -115,6 +138,9 @@ function TestPage() {
     }
   };
 
+  /**
+   * Function to decrease the step
+   */
   const decreaseStep = () => {
     if (step === 1) {
       setStep(1);

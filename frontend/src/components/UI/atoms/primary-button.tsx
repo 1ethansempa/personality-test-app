@@ -22,10 +22,16 @@ function PrimaryButton({
 }: PrimaryButtonProps) {
   const [isHovered, setIsHovered] = useState(false);
 
+  /**
+   * Handle button hover
+   */
   const handleHover = () => {
     setIsHovered(true);
   };
 
+  /**
+   * Handle mouse leave
+   */
   const handleMouseLeave = () => {
     setIsHovered(false);
   };

@@ -15,6 +15,12 @@ function QuestionOption({
   index,
   questionId,
 }: QuestionOptionProps) {
+  /**
+   * Function to calculate a letter based on the provided index
+   * Calculate the letter by converting the index to the corresponding ASCII character code
+   * @param index question option index
+   * @returns a string of the letter e.g A
+   */
   const calculateLetter = (index: number) => {
     const letter = String.fromCharCode(65 + index);
 

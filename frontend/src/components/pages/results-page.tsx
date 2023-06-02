@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { questionsSelector } from "../../slices/question";
 import { useSelector } from "react-redux";
-import axios from "axios";
 import ErrorBlock from "../UI/molecules/error-block";
 import QuoteBlock from "../UI/molecules/quote-block";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../services";
 
 function ResultsPage() {
   const [loading, setLoading] = useState(true);
@@ -19,18 +19,9 @@ function ResultsPage() {
     setLoading(true);
 
     try {
-      const resultsResponse = await axios.post(
-        `http://localhost:4000/assessment/results`,
-        {
-          selectedOptions,
-        },
-        {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const resultsResponse = await api.post("assessment/results", {
+        selectedOptions,
+      });
 
       if (resultsResponse.data) {
         setFetchError(false);

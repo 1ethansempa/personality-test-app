@@ -8,6 +8,11 @@ export const questionsSlice = createSlice({
     selectedOptions: [] as SelectedOption[],
   },
   reducers: {
+    /**
+     * / Update the selectedOptions state with the payload from the action
+     * @param { WritableDraft<{selectedOptions: SelectedOption[];}>} state
+     * @param  {payload: any; type: string;} action
+     */
     updateSelectedOptions: (state, action) => {
       state.selectedOptions = action.payload;
     },
