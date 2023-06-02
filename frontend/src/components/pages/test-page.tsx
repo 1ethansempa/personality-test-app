@@ -6,7 +6,6 @@ import QuestionCardSkeleton from "../UI/atoms/skeletons/question-card-skeleton";
 import { useAppDispatch } from "../../store";
 import { updateSelectedOptions } from "../../slices/question";
 import { useNavigate } from "react-router-dom";
-import LazyLoadedImage from "../UI/atoms/lazy-loaded-image";
 import { api } from "../../services";
 import ErrorBlock from "../UI/molecules/error-block";
 
