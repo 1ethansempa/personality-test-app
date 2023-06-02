@@ -7,6 +7,7 @@ import QuestionCardSkeleton from "../UI/atoms/skeletons/question-card-skeleton";
 import { useAppDispatch } from "../../store";
 import { updateSelectedOptions } from "../../slices/question";
 import { useNavigate } from "react-router-dom";
+import LazyLoadedImage from "../UI/atoms/lazy-loaded-image";
 
 function TestPage() {
   const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -15,6 +16,7 @@ function TestPage() {
   const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>([]);
   const [nextBtnText, setNextBtnText] = useState("Next");
   const [prevBtnText, setPrevBtnText] = useState("Previous");
+  const [fetchError, setFetchError] = useState(false);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -34,12 +36,15 @@ function TestPage() {
       );
 
       if (questionsResponse.data) {
-        console.log(questionsResponse.data);
         setQuestions(questionsResponse.data);
         setStep(1);
         setNextBtnText("Next");
+        setFetchError(false);
       }
-    } catch (error: any) {}
+    } catch (error: any) {
+      console.log(error);
+      setFetchError(true);
+    }
 
     setLoading(false);
   };
@@ -129,7 +134,7 @@ function TestPage() {
       <div className="flex items-center justify-center mt-16">
         {loading ? (
           <QuestionCardSkeleton />
-        ) : (
+        ) : !fetchError ? (
           <QuestionCard
             question={questions[step - 1]}
             currentQuestionNumber={step}
@@ -142,6 +147,11 @@ function TestPage() {
             handleNext={increaseStep}
             handlePrevious={decreaseStep}
           />
+        ) : (
+          <div className="flex flex-col items-center justify-center my-4">
+            <LazyLoadedImage src="server-error.png" alt="Server Error" />
+            <div className="my-3">Server is offline or under maintenance.</div>
+          </div>
         )}
       </div>
     </div>
